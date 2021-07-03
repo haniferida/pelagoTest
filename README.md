@@ -14,9 +14,9 @@ In this challenge I am using standard python code with unittest tools. I am not 
 
 
 ## Set Up and How to run
-To run this test, simply clone this project or download the zip file and then unzip it to your local.
+To run this test, simply clone this project or download the zip file and then unzip it to your local. You can run it from command line or using IDE like PyCharm. Make sure you have python3 installed.
 
-This test can be run in command line by using standard python command
+In order to run it from command line, you need to install request and jsonschema module using this command `pip3 install requests` & `pip3 install jsonschema`. After that, this test can be run in command line by using standard python command
 `python3 main.py`
 
 We can also run it using PyCharm IDE. Just open the project on PyCharm, then open main.py file. From there we can run single test by click play button on the left of each test, or run all by click play button on the left of pelago_test class
