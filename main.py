@@ -6,7 +6,6 @@
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 import jsonschema
 import requests
-import json
 from jsonschema import validate
 import unittest
 
@@ -24,6 +23,25 @@ wrongQuery = "query product($productId: String!) {\n product(productId: $product
 
 productSchema = {
     "type": "object",
+    "required": [
+        "productId",
+        "productName",
+        "destinationId",
+        "cancellationType",
+        "cancellationWindow",
+        "minGroupSize",
+        "duration",
+        "openDateTicket",
+        "collectPhysicalTicket",
+        "confirmationType",
+        "voucherType",
+        "guideLanguages",
+        "priceRangeFrom",
+        "priceRangeTo",
+        "latitude",
+        "longitude",
+        "address",
+    ],
     "properties": {
         "productId": {"type": "string"},
         "productName": {"type": "string"},
@@ -47,6 +65,7 @@ productSchema = {
 
 pelagoErrorSchema = {
     "type": "object",
+    "required": ["errorMessage", "code"],
     "properties": {
         "errorMessage": {"type": "string"},
         "code": {"type": "number"},
@@ -55,36 +74,39 @@ pelagoErrorSchema = {
 
 
 class pelago_test(unittest.TestCase):
-    @staticmethod
-    def test_json_schema_successful_response():
+
+    # Verify JSON schema for all value in the successful response
+    def test_json_schema_successful_response(self):
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': query, "variables": {"productId": "p417p"}})
         response_body = response.json()
-        validate(instance=response_body, schema=productSchema)
+        productResponse = response_body['data']['product']
+        validate(instance=productResponse, schema=productSchema)
 
-    @staticmethod
-    def test_json_schema_successful_response_pelago_error():
+    # Verify JSON schema for all value in the successful response but got PelagoError
+    def test_json_schema_successful_response_pelago_error(self):
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': query, "variables": {"productId": "1"}})
         response_body = response.json()
-        validate(instance=response_body, schema=pelagoErrorSchema)
+        productResponse = response_body['data']['product']
+        validate(instance=productResponse, schema=pelagoErrorSchema)
 
-    @staticmethod
-    def test_status_code_200():
+    # Verify 200 status code when the request sent is successful
+    def test_status_code_200(self):
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': query, "variables": {"productId": "p417p"}})
         response_body = response.json()
         assert response.status_code == 200
         assert response_body['data']['product']['productId'] == "p417p"
 
-    @staticmethod
-    def test_status_code_400():
+    # Verify 400 status code when sending invalid request (wrong query)
+    def test_status_code_400(self):
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': wrongQuery, "variables": {"productId": "p417p"}})
         assert response.status_code == 400
 
-    @staticmethod
-    def test_wrong_productID():
+    # Verify when sending wrong productId
+    def test_wrong_productID(self):
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': query, "variables": {"productId": "wrongProduct"}})
         response_body = response.json()
