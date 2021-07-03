@@ -4,17 +4,20 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
-
+import jsonschema
 import requests
 import json
 from jsonschema import validate
-
-numOfTest = 0
-numOfPass = 0
-numOfFail = 0
+import unittest
 
 query = "query product($productId: String!) {\n product(productId: $productId) {\n ... on Product {\n productId\n " \
-        "productName\n destinationId\n mediaData\n cancellationType\n cancellationWindow\n minGroupSize\n duration\n " \
+        "productName\n destinationId\n cancellationType\n cancellationWindow\n minGroupSize\n duration\n " \
+        "openDateTicket\n collectPhysicalTicket\n confirmationType\n voucherType\n guideLanguages\n priceRangeFrom\n " \
+        "priceRangeTo\n latitude\n longitude\n address\n }\n ... on PelagoError {\n errorMessage\n " \
+        "code\n }\n }\n} "
+
+wrongQuery = "query product($productId: String!) {\n product(productId: $productId) {\n ... on Product {\n productId\n " \
+        "productName\n destinationId\n wrongType\n cancellationWindow\n minGroupSize\n duration\n " \
         "openDateTicket\n collectPhysicalTicket\n confirmationType\n voucherType\n guideLanguages\n priceRangeFrom\n " \
         "priceRangeTo\n latitude\n longitude\n address\n }\n ... on PelagoError {\n errorMessage\n " \
         "code\n }\n }\n} "
@@ -42,18 +45,52 @@ productSchema = {
     },
 }
 
+pelagoErrorSchema = {
+    "type": "object",
+    "properties": {
+        "errorMessage": {"type": "string"},
+        "code": {"type": "number"},
+    },
+}
 
-def test_first():
-    response = requests.post("https://traveller-core.dev.pelago.co/graphql",
-                             json={'query': query, "variables": {"productId": "p417p"}})
-    # print(response.json())
-    response_body = response.json()
-    assert response.status_code == 200
-    # assert response_body['data']['product']['destinationId'] == "singapore", "destinationId is not singapore"
-    productResponse = response_body['data']['product']
-    isValid = validate(instance=productResponse, schema=productSchema)
-    print("Test first is passed")
+
+class pelago_test(unittest.TestCase):
+    @staticmethod
+    def test_json_schema_successful_response():
+        response = requests.post("https://traveller-core.dev.pelago.co/graphql",
+                                 json={'query': query, "variables": {"productId": "p417p"}})
+        response_body = response.json()
+        validate(instance=response_body, schema=productSchema)
+
+    @staticmethod
+    def test_json_schema_successful_response_pelago_error():
+        response = requests.post("https://traveller-core.dev.pelago.co/graphql",
+                                 json={'query': query, "variables": {"productId": "1"}})
+        response_body = response.json()
+        validate(instance=response_body, schema=pelagoErrorSchema)
+
+    @staticmethod
+    def test_status_code_200():
+        response = requests.post("https://traveller-core.dev.pelago.co/graphql",
+                                 json={'query': query, "variables": {"productId": "p417p"}})
+        response_body = response.json()
+        assert response.status_code == 200
+        assert response_body['data']['product']['productId'] == "p417p"
+
+    @staticmethod
+    def test_status_code_400():
+        response = requests.post("https://traveller-core.dev.pelago.co/graphql",
+                                 json={'query': wrongQuery, "variables": {"productId": "p417p"}})
+        assert response.status_code == 400
+
+    @staticmethod
+    def test_wrong_productID():
+        response = requests.post("https://traveller-core.dev.pelago.co/graphql",
+                                 json={'query': query, "variables": {"productId": "wrongProduct"}})
+        response_body = response.json()
+        assert response_body['data']['product']['errorMessage'] == "wrongProduct product not found"
+        assert response_body['data']['product']['code'] == 404
 
 
 if __name__ == '__main__':
-    test_first()
+    unittest.main()
