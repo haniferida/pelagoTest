@@ -4,7 +4,6 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
-import jsonschema
 import requests
 from jsonschema import validate
 import unittest
