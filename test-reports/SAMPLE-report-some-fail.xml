@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<testsuite name="pelago_test-20210704013519" tests="8" time="1.355" failures="0" errors="3">
+	<testcase classname="pelago_test" name="test_json_schema_pelagoerror_response" time="0.197"/>
+	<testcase classname="pelago_test" name="test_json_schema_product_response" time="0.169"/>
+	<testcase classname="pelago_test" name="test_json_schema_query_error" time="0.159"/>
+	<testcase classname="pelago_test" name="test_status_code_200" time="0.150"/>
+	<testcase classname="pelago_test" name="test_status_code_400" time="0.209"/>
+	<testcase classname="pelago_test" name="test_send_empty_query" time="0.147">
+		<error type="AssertionError" message="'Must provide query string.' != 'Must provide query cuy.'
+- Must provide query string.
+?                    ^^^^^^
++ Must provide query cuy.
+?                    ^^^
+"><![CDATA[Traceback (most recent call last):
+  File "/Users/haniferidaputra/PycharmProjects/pelagoTest/main.py", line 157, in test_send_empty_query
+    self.assertEqual(response_body['errors'][0]['message'], "Must provide query cuy.")
+AssertionError: 'Must provide query string.' != 'Must provide query cuy.'
+- Must provide query string.
+?                    ^^^^^^
++ Must provide query cuy.
+?                    ^^^
+
+]]></error>
+	</testcase>
+	<testcase classname="pelago_test" name="test_wrong_URL" time="0.156">
+		<error type="AssertionError" message="400 != 300"><![CDATA[Traceback (most recent call last):
+  File "/Users/haniferidaputra/PycharmProjects/pelagoTest/main.py", line 148, in test_wrong_URL
+    self.assertEqual(response.status_code, 300)
+AssertionError: 400 != 300
+]]></error>
+	</testcase>
+	<testcase classname="pelago_test" name="test_wrong_productID" time="0.169">
+		<error type="AssertionError" message="404 != 400"><![CDATA[Traceback (most recent call last):
+  File "/Users/haniferidaputra/PycharmProjects/pelagoTest/main.py", line 142, in test_wrong_productID
+    self.assertEqual(response_body['data']['product']['code'], 400)
+AssertionError: 404 != 400
+]]></error>
+	</testcase>
+	<system-out><![CDATA[]]></system-out>
+	<system-err><![CDATA[]]></system-err>
+</testsuite>
