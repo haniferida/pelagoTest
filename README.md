@@ -3,12 +3,14 @@
 In this challenge I am using standard python code with unittest tools. I am not using any testing tools since my knowledge about GraphQL API testing using python is very limited for now. This is really a challenge since I never actually create API test from scratch and never code with Python as well. Not only that, I just learn about GraphQL from the last Interview with Pelago.
 
 ## Test Scenario
-- Verify JSON schema for all value in the successful response
-- Verify JSON schema for all value in the successful response but got PelagoError
-- Verify JSON schema for all value in the unsuccessful response
+- Verify JSON schema for all value in the Product response
+- Verify JSON schema for all value in the PelagoError response
+- Verify JSON schema for all value when invalid query passed
 - Verify 200 status code when the request sent is successful
 - Verify 400 status code when sending invalid request (wrong query)
 - Verify when sending wrong productId
+- Verify when sending wrong URL
+- Verify when sending empty query
 
 
 ## Set Up and How to run
@@ -20,8 +22,9 @@ We can also run it using PyCharm IDE. Just open the project on PyCharm, then ope
 ## Assumptions
 I made some assumption for the API specification. Here is the list:
 - duration is string not integer
-- no shortDescription in sample response so not testing it
+- some field that is not provided on sample response for example shortDescription are not tested. Tried to use Introspection, but it is disabled
 - latitude & longitude is string not integer
+- mediaData & content JSON is not validated since I don't know the exact specifications
 
 ## Future Work
 There are still many limitations and improvement that I can make for this API test. Here is some that I have in mind:
