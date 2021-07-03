@@ -5,6 +5,7 @@
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 import requests
+import xmlrunner as xmlrunner
 from jsonschema import validate
 import unittest
 
@@ -123,28 +124,28 @@ class pelago_test(unittest.TestCase):
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': query, "variables": {"productId": "p417p"}})
         response_body = response.json()
-        assert response.status_code == 200
-        assert response_body['data']['product']['productId'] == "p417p"
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response_body['data']['product']['productId'], "p417p")
 
     # Verify 400 status code when sending invalid request (wrong query)
     def test_status_code_400(self):
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': wrongQuery, "variables": {"productId": "p417p"}})
-        assert response.status_code == 400
+        self.assertEqual(response.status_code, 400)
 
     # Verify when sending wrong productId
     def test_wrong_productID(self):
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': query, "variables": {"productId": "wrongProduct"}})
         response_body = response.json()
-        assert response_body['data']['product']['errorMessage'] == "wrongProduct product not found"
-        assert response_body['data']['product']['code'] == 404
+        self.assertEqual(response_body['data']['product']['errorMessage'], "wrongProduct product not found")
+        self.assertEqual(response_body['data']['product']['code'], 404)
 
     # Verify when sending wrong URL
     def test_wrong_URL(self):
         response = requests.post("https://traveller-core.dev.pelago.co/graphq",
                                  json={'query': query, "variables": {"productId": "p417p"}})
-        assert response.status_code == 400
+        self.assertEqual(response.status_code, 400)
 
     # Verify when sending empty query
     def test_send_empty_query(self):
@@ -153,7 +154,7 @@ class pelago_test(unittest.TestCase):
         assert response.status_code == 400
         response_body = response.json()
         validate(instance=response_body, schema=wrongQuerySchema)
-        assert response_body['errors'][0]['message'] == "Must provide query string."
+        self.assertEqual(response_body['errors'][0]['message'], "Must provide query string.")
 
 
 if __name__ == '__main__':

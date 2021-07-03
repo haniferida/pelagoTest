@@ -1,6 +1,6 @@
 # **Pelago SDET Problem**
 
-In this challenge I am using standard python code with unittest tools. I am not using any API testing tools since my knowledge about GraphQL API testing using python is very limited for now. This is really a challenge since I never actually create API test from scratch and never code with Python as well. Not only that, I just learn about GraphQL from the last Interview with Pelago.
+In this challenge I am using standard python code with unittest tools and jsonschema for schema validation. I am not using any API testing tools since my knowledge about GraphQL API testing using python is very limited for now. This is really a challenge since I never actually create API test from scratch and never code with Python as well. Not only that, I just learn about GraphQL from the last Interview with Pelago.
 
 ## Test Scenario
 - Verify JSON schema for all value in the Product response
