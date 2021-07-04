@@ -98,63 +98,87 @@ class pelago_test(unittest.TestCase):
 
     # Verify JSON schema for all value in the Product response
     def test_json_schema_product_response(self):
+        print("Start test for test_json_schema_product_response")
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': query, "variables": {"productId": "p417p"}})
         response_body = response.json()
         productResponse = response_body['data']['product']
         validate(instance=productResponse, schema=productSchema)
+        print("test_json_schema_product_response PASSED")
+        print("")
 
     # Verify JSON schema for all value in the PelagoError response
     def test_json_schema_pelagoerror_response(self):
+        print("Start test for test_json_schema_pelagoerror_response")
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': query, "variables": {"productId": "1"}})
         response_body = response.json()
         productResponse = response_body['data']['product']
         validate(instance=productResponse, schema=pelagoErrorSchema)
+        print("test_json_schema_pelagoerror_response PASSED")
+        print("")
 
     # Verify JSON schema for all value when invalid query passed
     def test_json_schema_query_error(self):
+        print("Start test for test_json_schema_query_error")
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': wrongQuery, "variables": {"productId": "p417p"}})
         response_body = response.json()
         validate(instance=response_body, schema=wrongQuerySchema)
+        print("test_json_schema_query_error PASSED")
+        print("")
 
     # Verify 200 status code when the request sent is successful
     def test_status_code_200(self):
+        print("Start test for test_status_code_200")
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': query, "variables": {"productId": "p417p"}})
         response_body = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response_body['data']['product']['productId'], "p417p")
+        print("test_status_code_200 PASSED")
+        print("")
 
     # Verify 400 status code when sending invalid request (wrong query)
     def test_status_code_400(self):
+        print("Start test for test_status_code_400")
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': wrongQuery, "variables": {"productId": "p417p"}})
         self.assertEqual(response.status_code, 400)
+        print("test_status_code_400 PASSED")
+        print("")
 
     # Verify when sending wrong productId
     def test_wrong_productID(self):
+        print("Start test for test_wrong_productID")
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': query, "variables": {"productId": "wrongProduct"}})
         response_body = response.json()
         self.assertEqual(response_body['data']['product']['errorMessage'], "wrongProduct product not found")
         self.assertEqual(response_body['data']['product']['code'], 404)
+        print("test_wrong_productID PASSED")
+        print("")
 
     # Verify when sending wrong URL
     def test_wrong_URL(self):
+        print("Start test for test_wrong_URL")
         response = requests.post("https://traveller-core.dev.pelago.co/graphq",
                                  json={'query': query, "variables": {"productId": "p417p"}})
         self.assertEqual(response.status_code, 400)
+        print("test_wrong_URL PASSED")
+        print("")
 
     # Verify when sending empty query
     def test_send_empty_query(self):
+        print("Start test for test_send_empty_query")
         response = requests.post("https://traveller-core.dev.pelago.co/graphql",
                                  json={'query': "", "variables": {"productId": "p417p"}})
         assert response.status_code == 400
         response_body = response.json()
         validate(instance=response_body, schema=wrongQuerySchema)
         self.assertEqual(response_body['errors'][0]['message'], "Must provide query string.")
+        print("test_send_empty_query PASSED")
+        print("")
 
 
 if __name__ == '__main__':
